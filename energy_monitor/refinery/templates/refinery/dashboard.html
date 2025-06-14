@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Refinery Energy Monitor</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Energy Wastage Dashboard</h1>
+    
+    <div style="display: grid; grid-template-columns: 2fr 1fr;">
+        <!-- Chart -->
+        <div>
+            <canvas id="energyChart"></canvas>
+        </div>
+        
+        <!-- Wastage Alerts -->
+        <div style="border-left: 2px solid #ccc; padding-left: 20px;">
+            <h2>Recent Wastage Incidents</h2>
+            <ul>
+                {% for record in wastage_records %}
+                <li style="color: red; margin-bottom: 10px;">
+                    {{ record.timestamp }}<br>
+                    <strong>{{ record.equipment.name }}</strong><br>
+                    {{ record.reason }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('energyChart');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ timestamps|safe }},
+                datasets: [{
+                    label: 'Power Usage (kW)',
+                    data: {{ power_data|safe }},
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            }
+        });
+    </script>
+</body>
+</html>
